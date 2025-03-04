@@ -1,4 +1,4 @@
-#include "LexicalAnalysisor.h"
+#include "Lexer.h"
 
 
 // ¹Ø¼ü×Ö±í

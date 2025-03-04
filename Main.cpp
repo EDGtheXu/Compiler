@@ -1,5 +1,5 @@
 
-#include"LexicalAnalysisor.h"
+#include"Lexer.h"
 
 // Ö÷º¯Êý
 int main() {
