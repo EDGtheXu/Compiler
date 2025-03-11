@@ -1,5 +1,4 @@
-#pragma once
-
+ï»¿#pragma once
 
 #include <iostream>
 #include <string>
@@ -7,175 +6,47 @@
 #include <cctype>
 #include <unordered_map>
 
+using namespace std;
 
-// ¶¨Òå´Ê·¨µ¥ÔªÀàĞÍ
-enum class TokenType {
-    KEYWORD, IDENTIFIER, INTEGER, REAL, BOOLEAN,
-    OPERATOR, DELIMITER, COMMENT, END_OF_FILE
-};
-
-// ¶¨Òå´Ê·¨µ¥Ôª½á¹¹
+// Tokenç»“æ„
 struct Token {
-    TokenType type;
-    std::string value;
-    int line; // ĞĞºÅ£¨ÓÃÓÚ´íÎóÌáÊ¾£©
+    int LINE;
+    string LEX;
+    string SEM;
+
+    Token(int line, string lex, string sem) : LINE(line), LEX(lex), SEM(sem) {}
 };
 
-
-// ¹Ø¼ü×Ö±í
-extern const std::unordered_map<std::string, TokenType> KEYWORDS;
-
-
-// ÔËËã·û±í
-extern const std::unordered_map<std::string, TokenType> OPERATORS;
-
-// ·Ö¸ô·û±í
-extern const std::unordered_map<char, TokenType> DELIMITERS;
-
-
-
-// ´Ê·¨·ÖÎöÆ÷Àà
-class Lexer {
-public:
-    Lexer(const std::string& input) : input(input), position(0), line(1) {}
-
-    // »ñÈ¡ÏÂÒ»¸ö´Ê·¨µ¥Ôª
-    Token getNextToken() {
-        skipWhitespace();
-
-        if (position >= input.size()) {
-            return { TokenType::END_OF_FILE, "", line };
-        }
-
-        char currentChar = input[position];
-
-        // ¼ì²é±êÊ¶·û»ò¹Ø¼ü×Ö
-        if (isalpha(currentChar) || currentChar == '_') {
-            return parseIdentifierOrKeyword();
-        }
-
-        // ¼ì²éÊı×Ö£¨ÕûÊı»òÊµÊı£©
-        if (isdigit(currentChar)) {
-            return parseNumber();
-        }
-
-        // ¼ì²éÔËËã·û
-        if (OPERATORS.find(std::string(1, currentChar)) != OPERATORS.end()) {
-            return parseOperator();
-        }
-
-        // ¼ì²é·Ö¸ô·û
-        if (DELIMITERS.find(currentChar) != DELIMITERS.end()) {
-            return parseDelimiter();
-        }
-
-        // ¼ì²é×¢ÊÍ
-        if (currentChar == '/' && position + 1 < input.size()) {
-            char nextChar = input[position + 1];
-            if (nextChar == '/') {
-                return parseSingleLineComment();
-            }
-            else if (nextChar == '*') {
-                return parseMultiLineComment();
-            }
-        }
-
-        // Î´Öª×Ö·û
-        throw std::runtime_error("Unknown character: " + std::string(1, currentChar) + " at line " + std::to_string(line));
-    }
-
+// è¯æ³•åˆ†æå™¨ç±»
+class LexicalAnalyzer {
 private:
-    std::string input;
-    size_t position;
-    int line;
+    string input;            // è¾“å…¥çš„æºä»£ç 
+    int pos;                 // å½“å‰å­—ç¬¦ä½ç½®
+    int line;                // å½“å‰è¡Œå·
+    vector<Token> tokens;    // å­˜å‚¨ç”Ÿæˆçš„Tokenåˆ—è¡¨
 
-    // Ìø¹ı¿Õ°××Ö·û
-    void skipWhitespace() {
-        while (position < input.size() && isspace(input[position])) {
-            if (input[position] == '\n') {
-                line++;
-            }
-            position++;
-        }
-    }
+    // DFAçŠ¶æ€
+    enum State {
+        START, INID, INNUM, INCHAR, INCOMMENT, INASSIN, INRANGE, DONE, ERROR
+    };
+    string getSymbolDescription(char symbol);
+    // è·å–ä¸‹ä¸€éç©ºå­—ç¬¦
+    char getNextChar();
 
-    // ½âÎö±êÊ¶·û»ò¹Ø¼ü×Ö
-    Token parseIdentifierOrKeyword() {
-        std::string value;
-        while (position < input.size() && (isalnum(input[position]) || input[position] == '_')) {
-            value += input[position++];
-        }
+    // å›é€€å­—ç¬¦
+    void ungetNextChar();
 
-        if (KEYWORDS.find(value) != KEYWORDS.end()) {
-            return { KEYWORDS.at(value), value, line };
-        }
+    // æŸ¥æ‰¾ä¿ç•™å­—
+    string reservedLookup(const string& id);
 
-        return { TokenType::IDENTIFIER, value, line };
-    }
+    // å¤„ç†å•è¯
+    void processToken(const string& buffer, State currentState);
 
-    // ½âÎöÊı×Ö£¨ÕûÊı»òÊµÊı£©
-    Token parseNumber() {
-        std::string value;
-        bool isReal = false;
+public:
+    // æ„é€ å‡½æ•°
+    LexicalAnalyzer(const string& code) : input(code), pos(0), line(1) {}
 
-        while (position < input.size() && (isdigit(input[position]) || input[position] == '.')) {
-            if (input[position] == '.') {
-                if (isReal) {
-                    throw std::runtime_error("Invalid number format at line " + std::to_string(line));
-                }
-                isReal = true;
-            }
-            value += input[position++];
-        }
-
-        return { isReal ? TokenType::REAL : TokenType::INTEGER, value, line };
-    }
-
-    // ½âÎöÔËËã·û
-    Token parseOperator() {
-        std::string value;
-        value += input[position++];
-
-        // ¼ì²éË«×Ö·ûÔËËã·û£¨Èç <=, >=, <>£©
-        if (position < input.size() && OPERATORS.find(value + input[position]) != OPERATORS.end()) {
-            value += input[position++];
-        }
-
-        return { TokenType::OPERATOR, value, line };
-    }
-
-    // ½âÎö·Ö¸ô·û
-    Token parseDelimiter() {
-        char value = input[position++];
-        return { DELIMITERS.at(value), std::string(1, value), line };
-    }
-
-    // ½âÎöµ¥ĞĞ×¢ÊÍ
-    Token parseSingleLineComment() {
-        std::string value;
-        while (position < input.size() && input[position] != '\n') {
-            value += input[position++];
-        }
-        return { TokenType::COMMENT, value, line };
-    }
-
-    // ½âÎö¶àĞĞ×¢ÊÍ
-    Token parseMultiLineComment() {
-        std::string value;
-        position += 2; // Ìø¹ı '/*'
-
-        while (position + 1 < input.size() && !(input[position] == '*' && input[position + 1] == '/')) {
-            if (input[position] == '\n') {
-                line++;
-            }
-            value += input[position++];
-        }
-
-        if (position + 1 >= input.size()) {
-            throw std::runtime_error("Unterminated multi-line comment at line " + std::to_string(line));
-        }
-
-        position += 2; // Ìø¹ı '*/'
-        return { TokenType::COMMENT, value, line };
-    }
+    // è·å–æ‰€æœ‰å•è¯
+    vector<Token> getTokenList();
 };
+

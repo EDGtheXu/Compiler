@@ -1,42 +1,17 @@
-
+ï»¿
 #include"Lexer.h"
 
-// Ö÷º¯Êý
+// ä¸»å‡½æ•°
 int main() {
-    std::string input = R"(
-        program Example;
-        var x, y: integer;
-        begin
-            x := 10;
-            y := x + 5;
-            if y > 10 then
-                write("Y is greater than 10");
-        end.
-    )";
-
-    Lexer lexer(input);
-    std::vector<Token> tokens;
-
-    try {
-        while (true) {
-            Token token = lexer.getNextToken();
-            tokens.push_back(token);
-            if (token.type == TokenType::END_OF_FILE) {
-                break;
-            }
-        }
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return 1;
-    }
-
-    // Êä³ö´Ê·¨µ¥Ôª
+    string code = "program p \n type t=integer;\n var t v1;\n char v2;\n begin \n read(v1);\n v1:=v1+10;\nwrite(v1)\n end.";
+    LexicalAnalyzer analyzer(code);
+    vector<Token> tokens = analyzer.getTokenList();
+    //cout<<tokens.size();
     for (const auto& token : tokens) {
-        std::cout << "Type: " << static_cast<int>(token.type)
-            << ", Value: " << token.value
-            << ", Line: " << token.line << std::endl;
+
+        cout << "[" << token.LINE << ", " << token.LEX << ", " << token.SEM << "]" << endl;
     }
+
 
     return 0;
 }
