@@ -5,6 +5,7 @@
 #include <vector>
 #include <cctype>
 #include <unordered_map>
+#include <fstream>
 
 using namespace std;
 

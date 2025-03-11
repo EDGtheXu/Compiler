@@ -187,7 +187,7 @@ vector<Token> LexicalAnalyzer::getTokenList() {
                 ungetNextChar();
             }
             else {
-                cout << ch << endl;
+                //cout << ch << endl;
                 processToken(buffer, ERROR);
             }
             break;
