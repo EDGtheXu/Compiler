@@ -1,5 +1,4 @@
-﻿
-#include"Lexer.h"
+﻿#include"Lexer.h"
 #include"tm.h"
 #include "func.h"
 #include "global.h"

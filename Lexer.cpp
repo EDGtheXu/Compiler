@@ -1,30 +1,5 @@
 ﻿//#include "Lexer.h"
 //
-//// 保留字
-//unordered_map<string, string> _reservedWords = {
-//    {"program","PROGRAM"},
-//    {"type","TYPE"},
-//    {"var","VAR"},
-//    {"procedure","PROCEDURE"},
-//    {"begin","BEGIN"},
-//    {"end","END"},
-//    {"array","ARRAY"},
-//    {"of","OF"},
-//    {"record","RECORD"},
-//    {"if","IF"},{"then","THEN"},
-//    {"else","ELSE"},
-//    {"fi","FI"},
-//    {"while","WHILE"},
-//    {"do","DO"},
-//    {"endwh","ENDWH"},
-//    {"read","READ"},
-//    {"write","WRITE"},
-//    {"return","RETURN1"},
-//    {"integer","INTEGER"},
-//    {"char","CHAR"}
-//};
-//
-//
 //string LexicalAnalyzer::getSymbolDescription(char symbol) {
 //    switch (symbol) {
 //    case '+':
@@ -82,11 +57,34 @@
 //    }
 //}
 //
-//
 //// 查找保留字
 //string LexicalAnalyzer::reservedLookup(const string& id) {
-//    auto it = _reservedWords.find(id);
-//    if (it != _reservedWords.end()) {
+//    //cout<<id<<endl;
+//
+//    unordered_map<string, string> reservedWords = {
+//{"program","PROGRAM"},
+//{"type","TYPE"},
+//{"var","VAR"},
+//{"procedure","PROCEDURE"},
+//{"begin","BEGIN"},
+//{"end","END"},
+//{"array","ARRAY"},
+//{"of","OF"},
+//{"record","RECORD"},
+//{"if","IF"},{"then","THEN"},
+//{"else","ELSE"},
+//{"fi","FI"},
+//{"while","WHILE"},
+//{"do","DO"},
+//{"endwh","ENDWH"},
+//{"read","READ"},
+//{"write","WRITE"},
+//{"return","RETURN1"},
+//{"integer","INTEGER"},
+//{"char","CHAR"}
+//    };
+//    auto it = reservedWords.find(id);
+//    if (it != reservedWords.end()) {
 //        return it->second;
 //    }
 //    return "ID";
@@ -189,7 +187,7 @@
 //                ungetNextChar();
 //            }
 //            else {
-//                cout << ch << endl;
+//                //cout << ch << endl;
 //                processToken(buffer, ERROR);
 //            }
 //            break;

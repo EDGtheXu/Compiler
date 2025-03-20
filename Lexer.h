@@ -5,10 +5,9 @@
 //#include <vector>
 //#include <cctype>
 //#include <unordered_map>
+//#include <fstream>
 //
 //using namespace std;
-//
-//extern unordered_map<string, string> _reservedWords;
 //
 //// Token结构
 //struct Token {
