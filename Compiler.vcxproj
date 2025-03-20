@@ -88,6 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -100,8 +101,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions); _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,11 +141,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="global.cpp" />
     <ClCompile Include="Lexer.cpp" />
+    <ClCompile Include="lexical.cpp" />
+    <ClCompile Include="ll1.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="mid.cpp" />
+    <ClCompile Include="newll1.cpp" />
+    <ClCompile Include="recursion.cpp" />
+    <ClCompile Include="semantic.cpp" />
+    <ClCompile Include="tm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="func.h" />
+    <ClInclude Include="global.h" />
+    <ClInclude Include="globalVar.h" />
     <ClInclude Include="Lexer.h" />
+    <ClInclude Include="lexical.h" />
+    <ClInclude Include="ll1.h" />
+    <ClInclude Include="mid.h" />
+    <ClInclude Include="newll1.h" />
+    <ClInclude Include="semantic.h" />
+    <ClInclude Include="tm.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="cod.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
